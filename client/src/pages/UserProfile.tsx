@@ -42,16 +42,16 @@ export default function UserProfile() {
   const { toast } = useToast();
   const [resumeLoading, setResumeLoading] = useState(false);
   
-  // Mock existing user data
+  // Initialize with empty profile data - will be populated from resume upload or manual entry
   const [profileData, setProfileData] = useState<ProfileData>({
-    name: "Alex Thompson",
-    email: "alex.thompson@university.edu",
+    name: "",
+    email: "",
     major: "CS",
-    year: 3,
-    experience: 2,
-    focusAreas: "Data Science, Machine Learning, Backend Development",
-    summary: "3rd-year CS student at University, 2 years of experience, focuses on Data Science, Machine Learning, Backend Development.",
-    selectedTags: ["vibe coder", "caffeine addicted", "ml enjoyer", "night owl"]
+    year: 0,
+    experience: 0,
+    focusAreas: "",
+    summary: "",
+    selectedTags: []
   });
 
   const availableTags = profileData.major === "CS" ? CS_TAGS : BUS_TAGS;
@@ -123,7 +123,7 @@ export default function UserProfile() {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
-        user={{ name: profileData.name, avatar: profileData.photo }} 
+        user={{ name: profileData.name || "User", avatar: profileData.photo }} 
         onProfileClick={() => {}} 
       />
       
@@ -143,10 +143,32 @@ export default function UserProfile() {
                 Edit Profile
               </h1>
               <p className="text-muted-foreground">
-                Keep your information up to date to get better matches
+                {profileData.name ? "Keep your information up to date to get better matches" : "Upload your resume or fill out your profile to get started"}
               </p>
             </div>
           </div>
+
+          {/* Empty Profile Message */}
+          {!profileData.name && (
+            <Card className="p-6 mb-6 bg-gradient-subtle border border-electric-purple/20">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  Welcome to LockedIn! 👋
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  To get started, either upload your resume to auto-fill your profile, or fill out the form below manually.
+                </p>
+                <Button 
+                  variant="gradient-primary" 
+                  onClick={handleReuploadResume}
+                  disabled={resumeLoading}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  {resumeLoading ? "Parsing Resume..." : "Upload Resume"}
+                </Button>
+              </div>
+            </Card>
+          )}
 
           {/* Profile Form */}
           <Card className="p-8 shadow-card border-0 mb-6">
@@ -159,6 +181,7 @@ export default function UserProfile() {
                     id="name"
                     value={profileData.name}
                     onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter your full name"
                     className="mt-2"
                   />
                 </div>
@@ -170,6 +193,7 @@ export default function UserProfile() {
                     type="email"
                     value={profileData.email}
                     onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="your.email@university.edu"
                     className="mt-2"
                   />
                 </div>
@@ -194,6 +218,7 @@ export default function UserProfile() {
                     type="number"
                     value={profileData.year}
                     onChange={(e) => setProfileData(prev => ({ ...prev, year: parseInt(e.target.value) || 0 }))}
+                    placeholder="1-8 or -1 for Alumni"
                     className="mt-2"
                   />
                 </div>
@@ -208,6 +233,7 @@ export default function UserProfile() {
                     type="number"
                     value={profileData.experience}
                     onChange={(e) => setProfileData(prev => ({ ...prev, experience: parseInt(e.target.value) || 0 }))}
+                    placeholder="0-10"
                     className="mt-2"
                   />
                 </div>
@@ -218,6 +244,7 @@ export default function UserProfile() {
                     id="focusAreas"
                     value={profileData.focusAreas}
                     onChange={(e) => setProfileData(prev => ({ ...prev, focusAreas: e.target.value }))}
+                    placeholder="Data Science, Machine Learning, Backend Development"
                     className="mt-2"
                   />
                 </div>
@@ -228,6 +255,7 @@ export default function UserProfile() {
                     id="summary"
                     value={profileData.summary}
                     onChange={(e) => setProfileData(prev => ({ ...prev, summary: e.target.value }))}
+                    placeholder="Tell us about yourself, your interests, and career goals..."
                     className="mt-2 min-h-[100px]"
                   />
                 </div>
@@ -238,7 +266,7 @@ export default function UserProfile() {
                     <Avatar className="h-16 w-16">
                       <AvatarImage src={profileData.photo} />
                       <AvatarFallback className="bg-gradient-primary text-white font-semibold">
-                        {profileData.name.charAt(0)}
+                        {profileData.name ? profileData.name.charAt(0) : "U"}
                       </AvatarFallback>
                     </Avatar>
                     <Button variant="outline" size="sm">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Heart, Info, MessageCircle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { JobCard, JobData } from "@/components/ui/job-card";
@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { getJobs, swipeJob, Job } from "@/lib/api";
 
 // Mock job data
 const mockJobs: JobData[] = [
@@ -107,30 +108,99 @@ export default function MainSeeking() {
   const [showCompanyInfo, setShowCompanyInfo] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<JobData["company"] | null>(null);
   const [coldMessage, setColdMessage] = useState("");
-  const [jobs] = useState(mockJobs);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState({ name: "User", avatar: "" });
   
-  const currentJob = jobs[currentJobIndex];
-  const mockUser = { name: "Alex Thompson", avatar: "" };
+  // Convert API Job to JobCard JobData
+  const convertJobToJobData = (job: Job): JobData => ({
+    id: job.id.toString(),
+    title: job.job_name,
+    company: {
+      name: job.company_name,
+      logo: job.company_photo,
+      size: "50-200", // Default size
+      industry: "Technology", // Default industry
+    },
+    location: job.location,
+    workType: "Hybrid", // Default work type
+    salary: { min: 60000, max: 120000 }, // Default salary range
+    distance: 5.0, // Default distance
+    categories: job.interests,
+    userCategories: job.interests, // For now, show all as matched
+    description: job.description,
+    requirements: [], // Not provided in API
+    techStack: [], // Not provided in API
+    benefits: [] // Not provided in API
+  });
 
-  const handleApply = (jobId: string) => {
-    const job = jobs.find(j => j.id === jobId);
-    if (job) {
-      toast({
-        title: "Application submitted! 💼",
-        description: `Applied to ${job.title} at ${job.company.name}`,
-      });
+  const currentJob = jobs[currentJobIndex] ? convertJobToJobData(jobs[currentJobIndex]) : null;
+
+  // Load jobs from API
+  useEffect(() => {
+    const loadJobs = async () => {
+      try {
+        setLoading(true);
+        const jobsData = await getJobs();
+        setJobs(jobsData);
+      } catch (error) {
+        console.error("Failed to load jobs:", error);
+        toast({
+          title: "Failed to load jobs",
+          description: "Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadJobs();
+  }, [toast]);
+
+  const handleApply = async (jobId: string) => {
+    try {
+      const result = await swipeJob(parseInt(jobId), 'right');
+      const job = jobs.find(j => j.id.toString() === jobId);
+      
+      if (job) {
+        toast({
+          title: result.matched ? "It's a match! 💖" : "Application submitted! 💼",
+          description: result.matched 
+            ? `You matched with ${job.company_name}!` 
+            : `Applied to ${job.job_name} at ${job.company_name}`,
+        });
+      }
       nextJob();
+    } catch (error) {
+      console.error("Failed to apply:", error);
+      toast({
+        title: "Failed to apply",
+        description: "Please try again.",
+        variant: "destructive"
+      });
     }
   };
 
-  const handlePass = (jobId: string) => {
-    const job = jobs.find(j => j.id === jobId);
-    if (job) {
-      toast({
-        title: "Passed",
-        description: `Passed on ${job.title} at ${job.company.name}`,
-      });
+  const handlePass = async (jobId: string) => {
+    try {
+      await swipeJob(parseInt(jobId), 'left');
+      const job = jobs.find(j => j.id.toString() === jobId);
+      
+      if (job) {
+        toast({
+          title: "Passed",
+          description: `Passed on ${job.job_name} at ${job.company_name}`,
+        });
+      }
       nextJob();
+    } catch (error) {
+      console.error("Failed to pass:", error);
+      toast({
+        title: "Failed to pass",
+        description: "Please try again.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -176,10 +246,31 @@ export default function MainSeeking() {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppHeader user={user} onProfileClick={() => {}} />
+        <div className="container mx-auto px-4 py-12 text-center">
+          <div className="max-w-md mx-auto">
+            <div className="w-24 h-24 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6">
+              <Heart className="h-12 w-12 text-white animate-pulse" />
+            </div>
+            <h2 className="text-2xl font-bold gradient-text-primary mb-4">
+              Loading opportunities...
+            </h2>
+            <p className="text-muted-foreground">
+              Finding the perfect jobs for you!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!currentJob) {
     return (
       <div className="min-h-screen bg-background">
-        <AppHeader user={mockUser} onProfileClick={() => {}} />
+        <AppHeader user={user} onProfileClick={() => {}} />
         <div className="container mx-auto px-4 py-12 text-center">
           <div className="max-w-md mx-auto">
             <div className="w-24 h-24 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6">
@@ -203,7 +294,7 @@ export default function MainSeeking() {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader user={mockUser} onProfileClick={() => window.location.href = "/profile"} />
+      <AppHeader user={user} onProfileClick={() => window.location.href = "/profile"} />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-md mx-auto">

@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 interface AppHeaderProps {
   user?: {
@@ -17,14 +18,41 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ user, onProfileClick }: AppHeaderProps) {
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate("/seeking");
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold gradient-text-primary">
-            LockedIn
-          </h1>
+        <div className="flex items-center gap-3">
+          <div 
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 hover:scale-105 transition-all duration-200 select-none"
+            onClick={handleLogoClick}
+            title="Go to job seeking"
+          >
+            {/* Lock Icon with "in" */}
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="relative w-5 h-5">
+                {/* Lock shackle (top part) */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-3 border-2 border-white rounded-full"></div>
+                {/* Lock body */}
+                <div className="absolute top-1.5 left-0 w-5 h-3 bg-white rounded-sm"></div>
+                {/* "in" text inside lock body */}
+                <div className="absolute top-1.5 left-0 w-5 h-3 flex items-center justify-center">
+                  <span className="text-blue-600 text-xs font-bold leading-none">in</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Text */}
+            <h1 className="text-2xl font-bold text-gray-900">
+              LockedIn
+            </h1>
+          </div>
         </div>
 
         {/* Right side controls */}
