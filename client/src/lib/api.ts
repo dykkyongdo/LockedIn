@@ -108,6 +108,16 @@ export async function login(email: string, password: string): Promise<{ token: s
     return r.json();
 }
 
+// Logout function (client-side only)
+export function logout(): void {
+    // Clear authentication token
+    localStorage.removeItem('token');
+    // Clear user profile data
+    localStorage.removeItem('userProfile');
+    // Redirect to home page
+    window.location.href = '/';
+}
+
 // Profile management
 export async function getProfile(): Promise<User> {
     const r = await fetch(`${BASE}/api/profile`, {
