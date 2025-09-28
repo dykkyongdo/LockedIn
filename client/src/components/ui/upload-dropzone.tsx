@@ -132,14 +132,6 @@ export function UploadDropzone({
             Drop your PDF, PNG, or JPG file here, or click to browse
           </p>
           
-          <Button 
-            variant={isDragOver ? "gradient-primary" : "outline"}
-            size="sm"
-            type="button"
-          >
-            Choose File
-          </Button>
-          
           <p className="text-xs text-muted-foreground mt-3">
             We'll parse your name, email, summary, year & skills
           </p>

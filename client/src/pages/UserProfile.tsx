@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Camera, Upload } from "lucide-react";
+import { ArrowLeft, Camera, Upload, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +10,7 @@ import { TagChip } from "@/components/ui/tag-chip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AppHeader } from "@/components/layout/app-header";
 import { useToast } from "@/hooks/use-toast";
-import { summarizeResume, ResumeSummary } from "@/lib/api";
+import { summarizeResume, ResumeSummary, logout } from "@/lib/api";
 
 interface ProfileData {
   name: string;
@@ -225,7 +225,7 @@ export default function UserProfile() {
                   <Label className="text-sm font-semibold">Major</Label>
                   <Select value={profileData.major} onValueChange={(value) => setProfileData(prev => ({ ...prev, major: value as "CS" | "BUS" }))}>
                     <SelectTrigger className="mt-2">
-                      <SelectValue />
+                      <SelectValue placeholder="Select your major" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="CS">Computer Science (CS)</SelectItem>
@@ -355,6 +355,16 @@ export default function UserProfile() {
               onClick={handleSave}
             >
               Save Changes
+            </Button>
+            
+            <Button 
+              variant="outline"
+              size="lg"
+              onClick={logout}
+              className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
             </Button>
           </div>
         </div>

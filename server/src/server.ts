@@ -15,6 +15,9 @@ const app = express();
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "2mb" }));
 
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
+
 // Initialize database
 initDatabase().catch(console.error);
 

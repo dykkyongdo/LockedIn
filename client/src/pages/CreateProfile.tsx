@@ -10,7 +10,7 @@ import { TagChip } from "@/components/ui/tag-chip";
 import { UploadDropzone } from "@/components/ui/upload-dropzone";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { summarizeResume, ResumeSummary } from "@/lib/api";
+import { summarizeResume, ResumeSummary, uploadProfilePhoto, register } from "@/lib/api";
 
 interface ProfileData {
   name: string;
@@ -43,6 +43,8 @@ export default function CreateProfile() {
   const [useResume, setUseResume] = useState(true);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeLoading, setResumeLoading] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoLoading, setPhotoLoading] = useState(false);
   const [profileData, setProfileData] = useState<ProfileData>({
     name: "",
     email: "",
@@ -119,6 +121,72 @@ export default function CreateProfile() {
     }
   };
 
+  const handlePhotoUpload = async (file: File) => {
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a JPEG, PNG, GIF, or WebP image file.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 5MB.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setPhotoFile(file);
+    setPhotoLoading(true);
+
+    try {
+      const result = await uploadProfilePhoto(file);
+      
+      setProfileData(prev => ({
+        ...prev,
+        photo: result.photoUrl
+      }));
+
+      // Save to localStorage for persistence
+      const updatedProfile = { ...profileData, photo: result.photoUrl };
+      localStorage.setItem('userProfile', JSON.stringify(updatedProfile));
+
+      setPhotoLoading(false);
+      toast({
+        title: "Photo uploaded successfully!",
+        description: "Your profile photo has been updated.",
+      });
+    } catch (error) {
+      console.error("Photo upload error:", error);
+      setPhotoFile(null);
+      setPhotoLoading(false);
+      toast({
+        title: "Photo upload failed",
+        description: error instanceof Error ? error.message : "Failed to upload photo. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handlePhotoRemove = () => {
+    setPhotoFile(null);
+    setProfileData(prev => ({
+      ...prev,
+      photo: undefined
+    }));
+    
+    // Update localStorage
+    const updatedProfile = { ...profileData, photo: undefined };
+    localStorage.setItem('userProfile', JSON.stringify(updatedProfile));
+  };
+
   const handleTagToggle = (tag: string) => {
     setProfileData(prev => {
       const isSelected = prev.selectedTags.includes(tag);
@@ -151,7 +219,7 @@ export default function CreateProfile() {
     return "th";
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!profileData.name || !profileData.email || !profileData.major) {
       toast({
         title: "Please fill required fields",
@@ -161,13 +229,49 @@ export default function CreateProfile() {
       return;
     }
 
-    toast({
-      title: "Profile created successfully!",
-      description: "Welcome to LockedIn! Let's find you some amazing opportunities.",
-    });
-    
-    // Navigate to main seeking page
-    window.location.href = "/seeking";
+    try {
+      // Generate a temporary password for demo purposes
+      const tempPassword = "temp123"; // In production, you'd want a proper password flow
+      
+      // Split name into first and last name
+      const nameParts = profileData.name.trim().split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      // Register the user
+      const result = await register({
+        first_name: firstName,
+        last_name: lastName,
+        email: profileData.email,
+        password: tempPassword,
+        role: 'applicant',
+        university: 'University', // You might want to make this configurable
+        year_of_study: typeof profileData.year === 'number' ? profileData.year : undefined,
+        graduated: profileData.year === -1,
+        major: profileData.major === 'CS' ? 'CMPT' : 'BUS',
+        description: profileData.summary,
+        profile_picture: profileData.photo
+      });
+
+      // Store the token for future API calls
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+
+      toast({
+        title: "Profile created successfully!",
+        description: "Welcome to LockedIn! Let's find you some amazing opportunities.",
+      });
+      
+      // Navigate to main seeking page
+      window.location.href = "/seeking";
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast({
+        title: "Registration failed",
+        description: error instanceof Error ? error.message : "Failed to create profile. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -177,7 +281,7 @@ export default function CreateProfile() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center text-white mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Get <span className="text-yellow-300">LockedIn</span> 🚀
+              Get <span className="text-yellow-300">LockedIn</span> 💖
             </h1>
             <p className="text-xl md:text-2xl opacity-90 mb-8">
               Create your profile and start swiping on opportunities
@@ -369,16 +473,58 @@ export default function CreateProfile() {
                   <Label className="text-sm font-semibold">Profile Photo</Label>
                   <div className="mt-2 flex items-center gap-4">
                     <Avatar className="h-16 w-16">
-                      <AvatarImage src={profileData.photo} />
+                      <AvatarImage 
+                        src={profileData.photo ? 
+                          (profileData.photo.startsWith('http') ? 
+                            profileData.photo : 
+                            `http://localhost:3001${profileData.photo}`
+                          ) : undefined
+                        } 
+                      />
                       <AvatarFallback className="bg-gradient-primary text-white">
                         {profileData.name ? profileData.name.charAt(0) : <Camera className="h-6 w-6" />}
                       </AvatarFallback>
                     </Avatar>
-                    <Button variant="outline" size="sm">
-                      <Camera className="h-4 w-4 mr-2" />
-                      Upload Photo
-                    </Button>
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handlePhotoUpload(file);
+                        }}
+                        className="hidden"
+                        id="photo-upload"
+                        disabled={photoLoading}
+                      />
+                      <label htmlFor="photo-upload">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          asChild
+                          disabled={photoLoading}
+                        >
+                          <span>
+                            <Camera className="h-4 w-4 mr-2" />
+                            {photoLoading ? "Uploading..." : "Upload Photo"}
+                          </span>
+                        </Button>
+                      </label>
+                      {profileData.photo && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={handlePhotoRemove}
+                          disabled={photoLoading}
+                        >
+                          Remove Photo
+                        </Button>
+                      )}
+                    </div>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Upload a JPEG, PNG, GIF, or WebP image (max 5MB)
+                  </p>
                 </div>
               </div>
             </div>

@@ -69,10 +69,10 @@ router.post('/:jobId/swipe', async (req: any, res: any) => {
       return res.status(400).json({ error: 'Direction must be left or right' });
     }
 
-    // For demo purposes, simulate a 30% chance of match on right swipe
+    // For demo purposes, simulate a 50% chance of match on right swipe
     let matched = false;
     if (direction === 'right') {
-      matched = Math.random() < 0.3;
+      matched = Math.random() < 0.5;
     }
 
     res.json({ 
