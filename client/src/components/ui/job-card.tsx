@@ -3,7 +3,6 @@ import { MapPin, Heart, X, MessageCircle, Info, Building } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DistanceBadge } from "@/components/ui/distance-badge";
 import { TagChip } from "@/components/ui/tag-chip";
 import { cn } from "@/lib/utils";
 
@@ -92,7 +91,6 @@ export function JobCard({
                   {job.company.name}
                 </p>
               </div>
-              <DistanceBadge distance={job.distance} />
             </div>
 
             {/* Categories */}
@@ -129,7 +127,7 @@ export function JobCard({
               </div>
 
               {job.description && (
-                <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {job.description}
                 </p>
               )}

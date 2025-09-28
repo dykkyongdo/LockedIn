@@ -529,14 +529,23 @@ export default function MainSeeking() {
       
       const job = jobs.find(j => j.id.toString() === jobId);
       if (job) {
-        toast({
-          title: result.matched ? "It's a match! 💖" : "Application submitted! 💼",
-          description: result.matched 
-            ? `You matched with ${job.company.name}!` 
-            : `Applied to ${job.title} at ${job.company.name}`,
-        });
+        if (result.matched) {
+          toast({
+            title: "It's a match! 💖",
+            description: `You matched with ${job.company.name}! Redirecting to chat...`,
+          });
+          // Redirect to chats page with the specific chat
+          setTimeout(() => {
+            window.location.href = `/chats?chatId=${jobId}`;
+          }, 1500);
+        } else {
+          toast({
+            title: "Application submitted! 💼",
+            description: `Applied to ${job.title} at ${job.company.name}`,
+          });
+          nextJob();
+        }
       }
-      nextJob();
     } catch (error) {
       console.error("Failed to apply:", error);
       toast({
@@ -599,10 +608,15 @@ export default function MainSeeking() {
   const sendColdMessage = () => {
     toast({
       title: "Message sent! ✉️", 
-      description: "Your introduction has been sent to the company.",
+      description: "Your introduction has been sent to the company. Redirecting to chat...",
     });
     setShowColdMessage(false);
     setColdMessage("");
+    
+    // Redirect to chats page
+    setTimeout(() => {
+      window.location.href = "/chats";
+    }, 1500);
   };
 
   const handleCompanyInfo = (company: JobData["company"]) => {

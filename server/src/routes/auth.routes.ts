@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 // Register new user
 router.post('/register', async (req, res) => {
   try {
-    const { first_name, last_name, email, password, role, university, year_of_study, graduated, major, description } = req.body;
+    const { first_name, last_name, email, password, role, university, year_of_study, graduated, major, description, profile_picture } = req.body;
     
     // Check if user already exists
     const existingUser = await query('SELECT id FROM users WHERE email = ?', [email]);
@@ -21,9 +21,9 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const result = await run(`
-      INSERT INTO users (first_name, last_name, email, password, role, university, year_of_study, graduated, major, description)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [first_name, last_name, email, hashedPassword, role, university, year_of_study, graduated, major, description]);
+      INSERT INTO users (first_name, last_name, email, password, role, university, year_of_study, graduated, major, description, profile_picture)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [first_name, last_name, email, hashedPassword, role, university, year_of_study, graduated, major, description, profile_picture]);
 
     const token = jwt.sign({ id: result.lastID, email, role }, JWT_SECRET);
     

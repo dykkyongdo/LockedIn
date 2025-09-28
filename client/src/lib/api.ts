@@ -82,6 +82,7 @@ export async function register(userData: {
     graduated?: boolean;
     major?: 'BUS' | 'CMPT';
     description?: string;
+    profile_picture?: string;
 }): Promise<{ token: string; user: User }> {
     const r = await fetch(`${BASE}/api/auth/register`, {
         method: 'POST',
@@ -215,6 +216,23 @@ export async function getProfileTags(major: 'BUS' | 'CMPT'): Promise<ProfileTag[
     if (!r.ok) {
         const error = await r.json();
         throw new Error(error.error || 'Failed to fetch profile tags');
+    }
+    return r.json();
+}
+
+// Photo upload (for profile creation - no auth required)
+export async function uploadProfilePhoto(file: File): Promise<{ photoUrl: string }> {
+    const formData = new FormData();
+    formData.append('photo', file);
+    
+    const r = await fetch(`${BASE}/api/profile/photo-temp`, {
+        method: 'POST',
+        body: formData
+    });
+    
+    if (!r.ok) {
+        const error = await r.json();
+        throw new Error(error.error || 'Failed to upload photo');
     }
     return r.json();
 }

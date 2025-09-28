@@ -1,4 +1,4 @@
-import { Bell, Menu, User, LogOut } from "lucide-react";
+import { Bell, Menu, User, LogOut, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -85,6 +85,10 @@ export function AppHeader({ user, onProfileClick }: AppHeaderProps) {
               <DropdownMenuItem onClick={onProfileClick}>
                 <User className="mr-2 h-4 w-4" />
                 Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/chats")}>
+                <MessageCircle className="mr-2 h-4 w-4" />
+                Messages
               </DropdownMenuItem>
               <DropdownMenuItem>
                 Settings

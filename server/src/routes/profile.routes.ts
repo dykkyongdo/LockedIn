@@ -1,7 +1,43 @@
 import { Router } from 'express';
 import { query, run } from '../config/db';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const router = Router();
+
+// Configure multer for photo uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, '../../uploads/profile-photos');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `profile-${uniqueSuffix}${path.extname(file.originalname)}`);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed!'));
+    }
+  }
+});
 
 // Middleware to verify JWT token
 function authenticateToken(req: any, res: any, next: any) {
@@ -127,6 +163,64 @@ router.put('/tags', authenticateToken, async (req: any, res: any) => {
 
     res.json({ message: 'Profile tags updated successfully' });
   } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Upload profile photo (temporary - no auth required for profile creation)
+router.post('/photo-temp', upload.single('photo'), async (req: any, res: any) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No photo file provided' });
+    }
+
+    // Just return the photo URL - don't update database yet
+    const photoUrl = `/uploads/profile-photos/${req.file.filename}`;
+
+    res.json({ 
+      message: 'Photo uploaded successfully',
+      photoUrl: photoUrl
+    });
+  } catch (error: any) {
+    // Clean up uploaded file if upload fails
+    if (req.file) {
+      const filePath = path.join(__dirname, '../../uploads/profile-photos', req.file.filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Upload profile photo (authenticated - for existing users)
+router.post('/photo', authenticateToken, upload.single('photo'), async (req: any, res: any) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No photo file provided' });
+    }
+
+    // Update user's profile_picture in database
+    const photoUrl = `/uploads/profile-photos/${req.file.filename}`;
+    
+    await run(`
+      UPDATE users 
+      SET profile_picture = ?
+      WHERE id = ?
+    `, [photoUrl, req.user.id]);
+
+    res.json({ 
+      message: 'Photo uploaded successfully',
+      photoUrl: photoUrl
+    });
+  } catch (error: any) {
+    // Clean up uploaded file if database update fails
+    if (req.file) {
+      const filePath = path.join(__dirname, '../../uploads/profile-photos', req.file.filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
     res.status(500).json({ error: error.message });
   }
 });

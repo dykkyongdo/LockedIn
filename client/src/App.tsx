@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import CreateProfile from "./pages/CreateProfile";
 import MainSeeking from "./pages/MainSeeking";
 import UserProfile from "./pages/UserProfile";
+import Chats from "./pages/Chats";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/create-profile" element={<CreateProfile />} />
           <Route path="/seeking" element={<MainSeeking />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/chats" element={<Chats />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
