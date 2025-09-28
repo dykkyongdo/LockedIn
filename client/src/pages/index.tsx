@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Zap, Heart, Target, Users, TrendingUp } from "lucide-react";
-import heroImage from "@/assets/hero-bg.jpg";
 
 const Index = () => {
   const handleGetStarted = () => {

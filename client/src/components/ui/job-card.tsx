@@ -199,13 +199,76 @@ export function JobCard({
 
             {/* Detailed content */}
             <div className="flex-1 space-y-4 overflow-y-auto">
-              {job.requirements && (
+              {/* Job Description */}
+              <div>
+                <h4 className="font-semibold text-sm text-foreground mb-2">Job Description</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {job.description}
+                </p>
+              </div>
+
+              {/* Company Information */}
+              <div>
+                <h4 className="font-semibold text-sm text-foreground mb-2">Company Info</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center text-xs text-muted-foreground">
+                    <Building className="h-3 w-3 mr-2" />
+                    <span>{job.company.name}</span>
+                  </div>
+                  {job.company.size && (
+                    <div className="text-xs text-muted-foreground">
+                      Company Size: {job.company.size}
+                    </div>
+                  )}
+                  {job.company.industry && (
+                    <div className="text-xs text-muted-foreground">
+                      Industry: {job.company.industry}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Job Categories/Interests */}
+              {job.categories && job.categories.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-sm text-foreground mb-2">Job Categories</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {job.categories.slice(0, 6).map((category) => (
+                      <Badge key={category} variant="secondary" className="text-xs">
+                        {category}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Work Type & Location */}
+              <div>
+                <h4 className="font-semibold text-sm text-foreground mb-2">Work Details</h4>
+                <div className="space-y-1">
+                  <div className="flex items-center text-xs text-muted-foreground">
+                    <MapPin className="h-3 w-3 mr-2" />
+                    <span>{job.location}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Work Type: {job.workType}
+                  </div>
+                  {job.salary && (
+                    <div className="text-xs text-muted-foreground">
+                      Salary: ${job.salary.min.toLocaleString()} - ${job.salary.max.toLocaleString()}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Requirements (if available) */}
+              {job.requirements && job.requirements.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-sm text-foreground mb-2">Requirements</h4>
                   <ul className="space-y-1">
                     {job.requirements.slice(0, 3).map((req, index) => (
                       <li key={index} className="text-xs text-muted-foreground flex items-start">
-                        <span className="w-1 h-1 bg-electric-purple rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                        <span className="w-1 h-1 bg-primary-blue rounded-full mt-2 mr-2 flex-shrink-0"></span>
                         {req}
                       </li>
                     ))}
@@ -213,7 +276,8 @@ export function JobCard({
                 </div>
               )}
 
-              {job.techStack && (
+              {/* Tech Stack (if available) */}
+              {job.techStack && job.techStack.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-sm text-foreground mb-2">Tech Stack</h4>
                   <div className="flex flex-wrap gap-1">
@@ -226,13 +290,14 @@ export function JobCard({
                 </div>
               )}
 
-              {job.benefits && (
+              {/* Benefits (if available) */}
+              {job.benefits && job.benefits.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-sm text-foreground mb-2">Benefits</h4>
                   <ul className="space-y-1">
                     {job.benefits.slice(0, 3).map((benefit, index) => (
                       <li key={index} className="text-xs text-muted-foreground flex items-start">
-                        <span className="w-1 h-1 bg-electric-cyan rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                        <span className="w-1 h-1 bg-accent-blue rounded-full mt-2 mr-2 flex-shrink-0"></span>
                         {benefit}
                       </li>
                     ))}

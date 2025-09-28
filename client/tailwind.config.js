@@ -20,6 +20,10 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         
+        // LockedIn Blue Theme
+        "primary-blue": "hsl(var(--primary-blue))",
+        "secondary-blue": "hsl(var(--secondary-blue))",
+        "accent-blue": "hsl(var(--accent-blue))",
         // Electric gradient colors
         "electric-pink": "hsl(var(--electric-pink))",
         "electric-purple": "hsl(var(--electric-purple))",

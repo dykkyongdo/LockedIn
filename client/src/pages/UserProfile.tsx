@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowLeft, Camera, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +54,19 @@ export default function UserProfile() {
     selectedTags: []
   });
 
+  // Load saved profile data from localStorage on component mount
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      try {
+        const parsedProfile = JSON.parse(savedProfile);
+        setProfileData(parsedProfile);
+      } catch (error) {
+        console.error('Error loading saved profile:', error);
+      }
+    }
+  }, []);
+
   const availableTags = profileData.major === "CS" ? CS_TAGS : BUS_TAGS;
 
   const handleTagToggle = (tag: string) => {
@@ -69,10 +82,20 @@ export default function UserProfile() {
   };
 
   const handleSave = () => {
-    toast({
-      title: "Profile updated successfully! ✅",
-      description: "Your changes have been saved.",
-    });
+    try {
+      // Save to localStorage for demo purposes
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+      toast({
+        title: "Profile updated successfully! ✅",
+        description: "Your changes have been saved.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error saving profile",
+        description: "Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleReuploadResume = () => {
@@ -216,8 +239,14 @@ export default function UserProfile() {
                   <Input
                     id="year"
                     type="number"
-                    value={profileData.year}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, year: parseInt(e.target.value) || 0 }))}
+                    value={profileData.year === 0 ? "" : profileData.year}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setProfileData(prev => ({ 
+                        ...prev, 
+                        year: value === "" ? 0 : parseInt(value) || 0
+                      }));
+                    }}
                     placeholder="1-8 or -1 for Alumni"
                     className="mt-2"
                   />
@@ -231,8 +260,14 @@ export default function UserProfile() {
                   <Input
                     id="experience"
                     type="number"
-                    value={profileData.experience}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, experience: parseInt(e.target.value) || 0 }))}
+                    value={profileData.experience === 0 ? "" : profileData.experience}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setProfileData(prev => ({ 
+                        ...prev, 
+                        experience: value === "" ? 0 : parseInt(value) || 0
+                      }));
+                    }}
                     placeholder="0-10"
                     className="mt-2"
                   />

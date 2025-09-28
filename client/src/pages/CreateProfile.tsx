@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Upload, User, Mail, GraduationCap, Calendar, Target, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,6 @@ import { UploadDropzone } from "@/components/ui/upload-dropzone";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { summarizeResume, ResumeSummary } from "@/lib/api";
-import heroImage from "@/assets/hero-bg.jpg";
 
 interface ProfileData {
   name: string;
@@ -55,6 +54,27 @@ export default function CreateProfile() {
     selectedTags: []
   });
 
+  // Load saved profile data from localStorage on component mount
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      try {
+        const parsedProfile = JSON.parse(savedProfile);
+        setProfileData(parsedProfile);
+      } catch (error) {
+        console.error('Error loading saved profile:', error);
+      }
+    }
+  }, []);
+
+  // Save to localStorage whenever profileData changes
+  useEffect(() => {
+    // Only save if there's meaningful data (not just empty initial state)
+    if (profileData.name || profileData.email || profileData.major) {
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+    }
+  }, [profileData]);
+
   const availableTags = profileData.major === "CS" ? CS_TAGS : profileData.major === "BUS" ? BUS_TAGS : [];
 
   const handleResumeUpload = async (file: File) => {
@@ -65,18 +85,23 @@ export default function CreateProfile() {
       const resumeData: ResumeSummary = await summarizeResume(file);
       
       // Map API response to our profile data structure
-      setProfileData(prev => ({
-        ...prev,
+      const newProfileData = {
+        ...profileData,
         name: resumeData.name || "",
         email: resumeData.email || "",
-        major: resumeData.skills.some(skill => 
+        major: (resumeData.skills.some(skill => 
           ['javascript', 'python', 'java', 'react', 'node', 'typescript', 'programming', 'coding'].includes(skill.toLowerCase())
-        ) ? "CS" : "BUS", // Simple heuristic to determine major
+        ) ? "CS" : "BUS") as "CS" | "BUS", // Simple heuristic to determine major
         year: resumeData.yearOfStudy === -1 ? -1 : resumeData.yearOfStudy,
         experience: resumeData.yearsExperience || 0,
         focusAreas: resumeData.skills.slice(0, 5).join(", "), // Use first 5 skills as focus areas
         summary: resumeData.short_description || ""
-      }));
+      };
+      
+      setProfileData(newProfileData);
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('userProfile', JSON.stringify(newProfileData));
       
       setResumeLoading(false);
       toast({
@@ -148,21 +173,14 @@ export default function CreateProfile() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div 
-        className="relative bg-gradient-primary overflow-hidden"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        <div className="container mx-auto px-4 py-16 relative z-10">
+      <div className="relative bg-gradient-primary overflow-hidden py-16">
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center text-white mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Welcome to LockedIn! 🚀
+              Get <span className="text-yellow-300">LockedIn</span> 🚀
             </h1>
             <p className="text-xl md:text-2xl opacity-90 mb-8">
-              Let's get your profile set up and find you amazing opportunities
+              Create your profile and start swiping on opportunities
             </p>
           </div>
 
@@ -236,6 +254,12 @@ export default function CreateProfile() {
                     id="name"
                     value={profileData.name}
                     onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
+                    onKeyDown={(e) => {
+                      // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Delete, Backspace
+                      if (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+                        return; // Allow default behavior
+                      }
+                    }}
                     placeholder="Your full name"
                     className="mt-2"
                   />
@@ -248,6 +272,12 @@ export default function CreateProfile() {
                     type="email"
                     value={profileData.email}
                     onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
+                    onKeyDown={(e) => {
+                      // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Delete, Backspace
+                      if (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+                        return; // Allow default behavior
+                      }
+                    }}
                     placeholder="your.email@university.edu"
                     className="mt-2"
                   />
@@ -271,8 +301,14 @@ export default function CreateProfile() {
                   <Input
                     id="year"
                     type="number"
-                    value={profileData.year}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, year: parseInt(e.target.value) || "" }))}
+                    value={profileData.year === "" ? "" : profileData.year}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setProfileData(prev => ({ 
+                        ...prev, 
+                        year: value === "" ? "" : parseInt(value) || ""
+                      }));
+                    }}
                     placeholder="1-8 or -1 for Alumni"
                     className="mt-2"
                   />
@@ -287,8 +323,14 @@ export default function CreateProfile() {
                   <Input
                     id="experience"
                     type="number"
-                    value={profileData.experience}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, experience: parseInt(e.target.value) || "" }))}
+                    value={profileData.experience === "" ? "" : profileData.experience}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setProfileData(prev => ({ 
+                        ...prev, 
+                        experience: value === "" ? "" : parseInt(value) || ""
+                      }));
+                    }}
                     placeholder="0-10"
                     className="mt-2"
                   />
@@ -300,6 +342,12 @@ export default function CreateProfile() {
                     id="focusAreas"
                     value={profileData.focusAreas}
                     onChange={(e) => setProfileData(prev => ({ ...prev, focusAreas: e.target.value }))}
+                    onKeyDown={(e) => {
+                      // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Delete, Backspace
+                      if (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+                        return; // Allow default behavior
+                      }
+                    }}
                     placeholder="Data Science, QA, ML"
                     className="mt-2"
                   />

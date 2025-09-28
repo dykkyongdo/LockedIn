@@ -10,27 +10,30 @@
     --background: 0 0% 98%;
     --foreground: 222 47% 11%;
 
-    /* Electric Gradient Colors */
+    /* LockedIn Blue Theme - Matching Logo */
+    --primary-blue: 217 91% 60%;      /* Logo blue */
+    --secondary-blue: 217 91% 50%;    /* Darker blue */
+    --accent-blue: 217 91% 70%;       /* Lighter blue */
     --electric-pink: 328 100% 54%;
     --electric-purple: 271 81% 56%;
     --electric-cyan: 189 94% 43%;
     
-    /* Gradient Definitions */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--electric-pink)), hsl(var(--electric-purple)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--electric-purple)), hsl(var(--electric-cyan)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--electric-pink)), hsl(var(--electric-cyan)));
-    --gradient-subtle: linear-gradient(135deg, hsl(var(--electric-pink) / 0.1), hsl(var(--electric-cyan) / 0.1));
+    /* Gradient Definitions - Blue Theme */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-blue)), hsl(var(--secondary-blue)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary-blue)), hsl(var(--accent-blue)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--primary-blue)), hsl(var(--electric-cyan)));
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--primary-blue) / 0.1), hsl(var(--accent-blue) / 0.1));
 
     /* Card System */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
-    --card-shadow: 0 8px 25px -8px hsl(var(--electric-purple) / 0.15);
-    --card-shadow-hover: 0 12px 35px -8px hsl(var(--electric-purple) / 0.25);
+    --card-shadow: 0 8px 25px -8px hsl(var(--primary-blue) / 0.15);
+    --card-shadow-hover: 0 12px 35px -8px hsl(var(--primary-blue) / 0.25);
 
     /* Interactive Elements */
     --primary: var(--gradient-primary);
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 0 0 30px hsl(var(--electric-pink) / 0.3);
+    --primary-glow: 0 0 30px hsl(var(--primary-blue) / 0.3);
 
     --secondary: 240 5% 96%;
     --secondary-foreground: 222 47% 11%;
@@ -47,7 +50,7 @@
     /* Borders & Inputs */
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: var(--electric-purple);
+    --ring: var(--primary-blue);
 
     /* Radius System */
     --radius: 1rem;
@@ -172,6 +175,6 @@
 
   /* Focus rings */
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-electric-purple focus-visible:ring-offset-2;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-blue focus-visible:ring-offset-2;
   }
 }

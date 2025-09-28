@@ -111,28 +111,121 @@ export default function MainSeeking() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({ name: "User", avatar: "" });
+
+  // Load user data from localStorage
+  useEffect(() => {
+    const loadUserData = () => {
+      const savedProfile = localStorage.getItem('userProfile');
+      if (savedProfile) {
+        try {
+          const parsedProfile = JSON.parse(savedProfile);
+          setUser({
+            name: parsedProfile.name || "User",
+            avatar: parsedProfile.photo || ""
+          });
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+        }
+      }
+    };
+
+    // Load on mount
+    loadUserData();
+
+    // Listen for storage changes (when profile is updated in another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'userProfile') {
+        loadUserData();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Also listen for focus events to refresh when user comes back to tab
+    const handleFocus = () => {
+      loadUserData();
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
   
   // Convert API Job to JobCard JobData
-  const convertJobToJobData = (job: Job): JobData => ({
-    id: job.id.toString(),
-    title: job.job_name,
-    company: {
-      name: job.company_name,
-      logo: job.company_photo,
-      size: "50-200", // Default size
-      industry: "Technology", // Default industry
-    },
-    location: job.location,
-    workType: "Hybrid", // Default work type
-    salary: { min: 60000, max: 120000 }, // Default salary range
-    distance: 5.0, // Default distance
-    categories: job.interests,
-    userCategories: job.interests, // For now, show all as matched
-    description: job.description,
-    requirements: [], // Not provided in API
-    techStack: [], // Not provided in API
-    benefits: [] // Not provided in API
-  });
+  const convertJobToJobData = (job: Job): JobData => {
+    // Generate realistic data based on job type
+    const isTechJob = job.interests.some(interest => 
+      ['Full Stack', 'Back-end', 'Front-end', 'ML', 'QA', 'Data Analysis'].includes(interest)
+    );
+    
+    const companySizes = ["10-50", "50-200", "200-500", "500-1000", "1000+"];
+    const industries = isTechJob ? ["Technology", "Software", "AI/ML", "Data Analytics"] : ["Business", "Finance", "Consulting", "Marketing"];
+    const workTypes = ["Remote", "Hybrid", "On-site"];
+    
+    // Generate salary based on job type and company
+    const baseSalary = isTechJob ? 70000 : 50000;
+    const salaryRange = Math.random() * 30000;
+    
+    // Generate tech stack based on job interests
+    const techStacks = {
+      'Full Stack': ['React', 'Node.js', 'TypeScript', 'MongoDB', 'AWS'],
+      'Back-end': ['Python', 'Java', 'Spring Boot', 'PostgreSQL', 'Docker'],
+      'Front-end': ['React', 'Vue.js', 'CSS3', 'Webpack', 'Jest'],
+      'ML': ['Python', 'TensorFlow', 'PyTorch', 'Pandas', 'Scikit-learn'],
+      'QA': ['Selenium', 'Jest', 'Cypress', 'Postman', 'Git'],
+      'Data Analysis': ['Python', 'SQL', 'Tableau', 'Power BI', 'Excel']
+    };
+    
+    const techStack = job.interests.flatMap(interest => techStacks[interest] || []).slice(0, 6);
+    
+    // Generate requirements based on job type
+    const requirements = isTechJob ? [
+      `Currently pursuing ${isTechJob ? 'Computer Science' : 'Business'} degree or equivalent experience`,
+      `Strong problem-solving and analytical skills`,
+      `Experience with modern development tools and practices`,
+      `Excellent communication and teamwork abilities`
+    ] : [
+      `Currently pursuing Business degree or equivalent experience`,
+      `Strong analytical and communication skills`,
+      `Experience with data analysis and reporting tools`,
+      `Ability to work in a fast-paced environment`
+    ];
+    
+    // Generate benefits
+    const benefits = [
+      "Competitive salary and benefits package",
+      "Professional development opportunities",
+      "Flexible work arrangements",
+      "Mentorship and career growth support"
+    ];
+    
+    return {
+      id: job.id.toString(),
+      title: job.job_name,
+      company: {
+        name: job.company_name,
+        logo: job.company_photo,
+        size: companySizes[Math.floor(Math.random() * companySizes.length)],
+        industry: industries[Math.floor(Math.random() * industries.length)],
+      },
+      location: job.location,
+      workType: workTypes[Math.floor(Math.random() * workTypes.length)],
+      salary: { 
+        min: Math.round(baseSalary + salaryRange), 
+        max: Math.round(baseSalary + salaryRange + 20000) 
+      },
+      distance: Math.round((Math.random() * 20 + 1) * 10) / 10, // 1-21 km
+      categories: job.interests,
+      userCategories: job.interests, // For now, show all as matched
+      description: job.description,
+      requirements: requirements,
+      techStack: techStack,
+      benefits: benefits
+    };
+  };
 
   const currentJob = jobs[currentJobIndex] ? convertJobToJobData(jobs[currentJobIndex]) : null;
 
