@@ -98,8 +98,248 @@ const mockJobs: JobData[] = [
       "Cross-functional exposure",
       "Full-time conversion opportunity"
     ]
+  },
+  {
+    id: "4",
+    title: "Software Engineering Intern",
+    company: {
+      name: "CloudTech Solutions",
+      size: "200-500",
+      industry: "Cloud Computing"
+    },
+    location: "New York, NY",
+    workType: "Hybrid",
+    salary: { min: 80000, max: 110000 },
+    distance: 12.5,
+    categories: ["Software Engineering", "Cloud", "DevOps", "Python"],
+    userCategories: ["Software Engineering", "Cloud"],
+    description: "Build scalable cloud infrastructure and microservices. Work with AWS, Docker, and Kubernetes to create robust backend systems that serve millions of users.",
+    requirements: [
+      "Strong programming skills in Python, Java, or Go",
+      "Experience with cloud platforms (AWS, GCP, or Azure)",
+      "Understanding of microservices architecture",
+      "Familiarity with containerization and orchestration"
+    ],
+    techStack: ["Python", "AWS", "Docker", "Kubernetes", "PostgreSQL", "Redis"],
+    benefits: [
+      "Cloud certification sponsorship",
+      "Flexible remote work",
+      "Stock options",
+      "Learning and development budget"
+    ]
+  },
+  {
+    id: "5",
+    title: "UX/UI Design Intern",
+    company: {
+      name: "DesignStudio Pro",
+      size: "50-100",
+      industry: "Design"
+    },
+    location: "Los Angeles, CA",
+    workType: "Remote",
+    salary: { min: 65000, max: 85000 },
+    distance: 15.2,
+    categories: ["UX Design", "UI Design", "Figma", "User Research"],
+    userCategories: ["UX Design", "UI Design"],
+    description: "Create beautiful and intuitive user experiences for mobile and web applications. Work closely with product managers and developers to bring designs to life.",
+    requirements: [
+      "Proficiency in Figma, Sketch, or Adobe Creative Suite",
+      "Understanding of user-centered design principles",
+      "Experience with user research and usability testing",
+      "Strong portfolio showcasing design skills"
+    ],
+    techStack: ["Figma", "Sketch", "Adobe XD", "Principle", "InVision", "Zeplin"],
+    benefits: [
+      "Design tool subscriptions",
+      "Conference attendance",
+      "Mentorship from senior designers",
+      "Portfolio development support"
+    ]
+  },
+  {
+    id: "6",
+    title: "Marketing Analytics Intern",
+    company: {
+      name: "GrowthHack Inc.",
+      size: "100-200",
+      industry: "Marketing Technology"
+    },
+    location: "Chicago, IL",
+    workType: "On-site",
+    salary: { min: 60000, max: 80000 },
+    distance: 7.8,
+    categories: ["Marketing", "Analytics", "Data Analysis", "Growth"],
+    userCategories: ["Analytics", "Marketing"],
+    description: "Analyze marketing campaigns and user behavior to drive growth. Use data to optimize conversion rates and improve customer acquisition strategies.",
+    requirements: [
+      "Strong analytical and problem-solving skills",
+      "Experience with Google Analytics and marketing tools",
+      "Knowledge of SQL and data visualization",
+      "Understanding of digital marketing channels"
+    ],
+    techStack: ["Google Analytics", "Tableau", "SQL", "Python", "HubSpot", "Mixpanel"],
+    benefits: [
+      "Marketing certification courses",
+      "Data analysis training",
+      "Cross-department collaboration",
+      "Performance bonus potential"
+    ]
+  },
+  {
+    id: "7",
+    title: "Cybersecurity Intern",
+    company: {
+      name: "SecureNet Corp",
+      size: "500-1000",
+      industry: "Cybersecurity"
+    },
+    location: "Washington, DC",
+    workType: "Hybrid",
+    salary: { min: 75000, max: 95000 },
+    distance: 3.1,
+    categories: ["Cybersecurity", "Network Security", "Penetration Testing", "Compliance"],
+    userCategories: ["Cybersecurity", "Network Security"],
+    description: "Protect organizations from cyber threats and vulnerabilities. Learn about security frameworks, penetration testing, and incident response.",
+    requirements: [
+      "Understanding of network protocols and security concepts",
+      "Experience with Linux and command-line tools",
+      "Knowledge of common attack vectors and defenses",
+      "Strong attention to detail and problem-solving skills"
+    ],
+    techStack: ["Wireshark", "Nmap", "Metasploit", "Burp Suite", "Splunk", "ELK Stack"],
+    benefits: [
+      "Security certification training",
+      "Hands-on lab environment",
+      "Mentorship from security experts",
+      "Conference and training budget"
+    ]
+  },
+  {
+    id: "8",
+    title: "DevOps Engineering Intern",
+    company: {
+      name: "ScaleUp Technologies",
+      size: "200-500",
+      industry: "Infrastructure"
+    },
+    location: "Austin, TX",
+    workType: "Remote",
+    salary: { min: 70000, max: 90000 },
+    distance: 4.5,
+    categories: ["DevOps", "Infrastructure", "Automation", "CI/CD"],
+    userCategories: ["DevOps", "Infrastructure"],
+    description: "Build and maintain infrastructure that scales. Work with CI/CD pipelines, monitoring systems, and cloud infrastructure to ensure reliable deployments.",
+    requirements: [
+      "Experience with Linux and command-line tools",
+      "Knowledge of version control (Git)",
+      "Understanding of containerization concepts",
+      "Basic scripting skills (Bash, Python, or similar)"
+    ],
+    techStack: ["Docker", "Kubernetes", "Jenkins", "Terraform", "Prometheus", "Grafana"],
+    benefits: [
+      "Cloud platform training",
+      "DevOps tool certifications",
+      "On-call experience",
+      "Infrastructure automation projects"
+    ]
+  },
+  {
+    id: "9",
+    title: "Business Intelligence Intern",
+    company: {
+      name: "DataInsights Ltd",
+      size: "100-300",
+      industry: "Business Intelligence"
+    },
+    location: "Boston, MA",
+    workType: "Hybrid",
+    salary: { min: 65000, max: 85000 },
+    distance: 9.3,
+    categories: ["Business Intelligence", "Data Visualization", "SQL", "Reporting"],
+    userCategories: ["Business Intelligence", "Data Visualization"],
+    description: "Transform raw data into actionable business insights. Create dashboards and reports that help stakeholders make informed decisions.",
+    requirements: [
+      "Strong SQL skills and data analysis experience",
+      "Experience with BI tools (Tableau, Power BI, or similar)",
+      "Understanding of business metrics and KPIs",
+      "Excellent communication and presentation skills"
+    ],
+    techStack: ["Tableau", "Power BI", "SQL", "Python", "Excel", "Snowflake"],
+    benefits: [
+      "BI tool certifications",
+      "Data visualization training",
+      "Business stakeholder interaction",
+      "Advanced analytics projects"
+    ]
+  },
+  {
+    id: "10",
+    title: "Mobile App Developer Intern",
+    company: {
+      name: "AppCraft Studios",
+      size: "50-150",
+      industry: "Mobile Development"
+    },
+    location: "Miami, FL",
+    workType: "On-site",
+    salary: { min: 70000, max: 90000 },
+    distance: 6.7,
+    categories: ["Mobile Development", "React Native", "iOS", "Android"],
+    userCategories: ["Mobile Development", "React Native"],
+    description: "Build cross-platform mobile applications using React Native. Work on user-facing features and contribute to the mobile development process.",
+    requirements: [
+      "Experience with React Native or native mobile development",
+      "Understanding of mobile UI/UX principles",
+      "Knowledge of JavaScript and mobile development tools",
+      "Familiarity with app store deployment processes"
+    ],
+    techStack: ["React Native", "JavaScript", "Xcode", "Android Studio", "Firebase", "Redux"],
+    benefits: [
+      "Mobile development training",
+      "App store publishing experience",
+      "Cross-platform development skills",
+      "User testing participation"
+    ]
   }
 ];
+
+// Function to categorize jobs by major
+const categorizeJobsByMajor = (jobs: JobData[]) => {
+  const csJobs: JobData[] = [];
+  const businessJobs: JobData[] = [];
+  
+  jobs.forEach(job => {
+    // Check for business-specific categories first
+    const isBusinessJob = job.categories.some(cat => 
+      ['Product Management', 'Strategy', 'Leadership', 'Marketing', 'Growth',
+       'Business Intelligence', 'Data Visualization', 'Reporting'].includes(cat)
+    );
+    
+    // Check for CS-specific categories
+    const isCSJob = job.categories.some(cat => 
+      ['Full Stack', 'React', 'Node.js', 'TypeScript', 'Data Science', 'Python', 'Machine Learning',
+       'Software Engineering', 'Cloud', 'DevOps', 'UX Design', 'UI Design', 'Figma', 'User Research',
+       'Cybersecurity', 'Network Security', 'Penetration Testing', 'Compliance', 'Infrastructure', 'Automation', 'CI/CD',
+       'Mobile Development', 'React Native', 'iOS', 'Android'].includes(cat)
+    );
+    
+    // Handle Analytics and Data Analysis based on context
+    const hasAnalytics = job.categories.includes('Analytics') || job.categories.includes('Data Analysis');
+    const hasSQL = job.categories.includes('SQL');
+    
+    if (isBusinessJob || (hasAnalytics && (hasSQL || job.title.toLowerCase().includes('marketing') || job.title.toLowerCase().includes('business')))) {
+      businessJobs.push(job);
+    } else if (isCSJob || hasAnalytics) {
+      csJobs.push(job);
+    } else {
+      // Default to CS if unclear
+      csJobs.push(job);
+    }
+  });
+  
+  return { csJobs, businessJobs };
+};
 
 export default function MainSeeking() {
   const { toast } = useToast();
@@ -111,6 +351,7 @@ export default function MainSeeking() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({ name: "User", avatar: "" });
+  const [userMajor, setUserMajor] = useState<"CS" | "BUS" | null>(null);
 
   // Load user data from localStorage
   useEffect(() => {
@@ -123,6 +364,7 @@ export default function MainSeeking() {
             name: parsedProfile.name || "User",
             avatar: parsedProfile.photo || ""
           });
+          setUserMajor(parsedProfile.major || null);
         } catch (error) {
           console.error('Error loading user profile:', error);
         }
@@ -237,14 +479,34 @@ export default function MainSeeking() {
         const apiJobs = await getJobs();
         // Convert API jobs to JobData format
         const convertedJobs = apiJobs.map(convertJobToJobData);
-        setJobs(convertedJobs);
+        
+        // Filter jobs based on user's major if available
+        if (userMajor) {
+          const { csJobs, businessJobs } = categorizeJobsByMajor(convertedJobs);
+          const filteredJobs = userMajor === "CS" ? csJobs : businessJobs;
+          const shuffledJobs = [...filteredJobs].sort(() => Math.random() - 0.5);
+          const limitedJobs = shuffledJobs.slice(0, 5);
+          setJobs(limitedJobs);
+        } else {
+          setJobs(convertedJobs);
+        }
       } catch (error) {
         console.warn("API not available, using mock data:", error);
         // Fallback to mock data when API is not available
-        setJobs(mockJobs);
+        let jobsToSet = mockJobs;
+        
+        // Filter mock jobs based on user's major if available
+        if (userMajor) {
+          const { csJobs, businessJobs } = categorizeJobsByMajor(mockJobs);
+          const filteredJobs = userMajor === "CS" ? csJobs : businessJobs;
+          const shuffledJobs = [...filteredJobs].sort(() => Math.random() - 0.5);
+          jobsToSet = shuffledJobs.slice(0, 5);
+        }
+        
+        setJobs(jobsToSet);
         toast({
           title: "Using demo data",
-          description: "API not available, showing sample jobs.",
+          description: userMajor ? `Showing ${userMajor} positions` : "API not available, showing sample jobs.",
         });
       } finally {
         setLoading(false);
@@ -252,7 +514,7 @@ export default function MainSeeking() {
     };
 
     loadJobs();
-  }, [toast]);
+  }, [toast, userMajor]);
 
   const handleApply = async (jobId: string) => {
     try {
@@ -359,7 +621,7 @@ export default function MainSeeking() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <AppHeader user={user} onProfileClick={() => {}} />
+        <AppHeader user={user} onProfileClick={() => window.location.href = "/profile"} />
         <div className="container mx-auto px-4 py-12 text-center">
           <div className="max-w-md mx-auto">
             <div className="w-24 h-24 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6">
@@ -380,17 +642,20 @@ export default function MainSeeking() {
   if (!currentJob) {
     return (
       <div className="min-h-screen bg-background">
-        <AppHeader user={user} onProfileClick={() => {}} />
+        <AppHeader user={user} onProfileClick={() => window.location.href = "/profile"} />
         <div className="container mx-auto px-4 py-12 text-center">
           <div className="max-w-md mx-auto">
             <div className="w-24 h-24 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6">
               <Heart className="h-12 w-12 text-white" />
             </div>
             <h2 className="text-2xl font-bold gradient-text-primary mb-4">
-              That's all for now!
+              {jobs.length === 0 ? "No positions found" : "That's all for now!"}
             </h2>
             <p className="text-muted-foreground mb-6">
-              You've seen all available opportunities. Check back later for more amazing jobs!
+              {jobs.length === 0 
+                ? `No ${userMajor === "CS" ? "Computer Science" : "Business"} positions available right now. Check back later!`
+                : "You've seen all available opportunities. Check back later for more amazing jobs!"
+              }
             </p>
             <Button variant="hero" onClick={refreshDeck}>
               <RotateCcw className="h-4 w-4 mr-2" />

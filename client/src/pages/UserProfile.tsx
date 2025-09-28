@@ -225,7 +225,7 @@ export default function UserProfile() {
                   <Label className="text-sm font-semibold">Major</Label>
                   <Select value={profileData.major} onValueChange={(value) => setProfileData(prev => ({ ...prev, major: value as "CS" | "BUS" }))}>
                     <SelectTrigger className="mt-2">
-                      <SelectValue />
+                      <SelectValue placeholder="Select your major" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="CS">Computer Science (CS)</SelectItem>
